@@ -1,95 +1,190 @@
-<!DOCTYPE html>
+DOCTYPE html>
 <html lang="fr" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DevSTudio</title>
+  <title>DevStudio</title>
   <!-- Tailwind CSS via CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"></script>
+  <!-- Chargement du SDK Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="bg-slate-900 text-slate-100 font-sans antialiased">
+<body class="bg-slate-900 text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between">
 
   <!-- EN-TÊTE / NAVBAR -->
-  <header class="max-w-6xl mx-auto px-6 py-6 flex justify-between items-center">
-    <h1 class="text-xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
+  <header class="max-w-6xl mx-auto px-6 py-6 w-full flex justify-between items-center">
+    <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
       DevStudio
     </h1>
-    <a href="#apps" class="text-sm bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg transition font-medium">
-      Découvrir les projets
-    </a>
+    <div id="nav-auth-status" class="text-sm text-slate-400">
+      <!-- Affiché dynamiquement si connecté -->
+    </div>
   </header>
 
-  <!-- HERO SECTION -->
-  <section class="max-w-4xl mx-auto px-6 py-20 text-center">
-    <span class="bg-blue-500/10 text-blue-400 text-xs px-3 py-1 rounded-full uppercase tracking-wider font-semibold">
-      Projets en cours de développement
-    </span>
-    <h2 class="text-4xl sm:text-6xl font-extrabold mt-6 leading-tight">
-      Des outils et logiciels pensés pour simplifier votre quotidien.
-    </h2>
-    <p class="text-slate-400 text-lg mt-6 max-w-2xl mx-auto">
-      Découvrez en avant-première mes futures applications web, mobiles et de bureau. Inscrivez-vous pour rejoindre la bêta fermée.
-    </p>
+  <!-- CONTENU PRINCIPAL -->
+  <main class="max-w-4xl mx-auto px-6 py-10 w-full flex-grow flex flex-col items-center justify-center">
+    
+    <!-- Section Présentation -->
+    <div class="text-center mb-10">
+      <h2 class="text-4xl font-extrabold mb-4 text-white">Mes Futures Applications</h2>
+      <p class="text-slate-400 text-lg max-w-xl mx-auto">
+        Bienvenue sur DevStudio. Connectez-vous ou créez un compte pour accéder à vos espaces de test et suivre nos lancements.
+      </p>
+    </div>
 
-    <!-- Formulaire Waitlist (Formspree) -->
-    <form action="https://formspree.io/f/xaeqaeag" method="POST" class="mt-8 flex flex-col sm:flex-row justify-center gap-3 max-w-md mx-auto">
-      <input type="email" name="email" placeholder="Entrez votre email..." required 
-             class="px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 flex-1">
-      <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-6 py-3 rounded-lg transition">
-        Rejoindre la bêta
-      </button>
-    </form>
-  </section>
-
-  <!-- SECTION VITE-VITRINE / APPS -->
-  <section id="apps" class="max-w-6xl mx-auto px-6 py-16 border-t border-slate-800">
-    <h3 class="text-2xl font-bold mb-8">Futures Applications</h3>
-
-    <div class="grid md:grid-cols-2 gap-8">
+    <!-- BOX AUTHENTIFICATION SUPABASE -->
+    <div class="bg-slate-800 p-8 rounded-xl shadow-2xl border border-slate-700 w-full max-w-md">
       
-      <!-- CARTE APPLICATION 1 -->
-      <div class="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-6 hover:border-slate-600 transition">
-        <div class="flex justify-between items-start mb-4">
-          <span class="text-3xl">🚀</span>
-          <span class="bg-amber-500/10 text-amber-400 text-xs px-2.5 py-1 rounded-full font-medium">
-            En développement (Bêta Q2 2026)
-          </span>
+      <!-- Zone Session Active (Cachée par défaut) -->
+      <div id="session-box" class="hidden text-center">
+        <div class="bg-emerald-900/50 border border-emerald-500 text-emerald-300 p-4 rounded-lg mb-6">
+          <p class="font-semibold">Vous êtes connecté en tant que :</p>
+          <p id="user-email-display" class="text-white mt-1 underline"></p>
         </div>
-        <h4 class="text-xl font-semibold text-white">App 1 : TaskFlow AI</h4>
-        <p class="text-slate-400 text-sm mt-2">
-          Un gestionnaire de tâches intelligent qui priorise vos journées automatiquement grâce à l'intelligence artificielle.
-        </p>
-        <div class="mt-6 flex gap-2">
-          <span class="text-xs bg-slate-700 text-slate-300 px-2.5 py-1 rounded">Web</span>
-          <span class="text-xs bg-slate-700 text-slate-300 px-2.5 py-1 rounded">Desktop</span>
-        </div>
+        <button onclick="handleLogout()" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition">
+          Se déconnecter
+        </button>
       </div>
 
-      <!-- CARTE APPLICATION 2 -->
-      <div class="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-6 hover:border-slate-600 transition">
-        <div class="flex justify-between items-start mb-4">
-          <span class="text-3xl">🎨</span>
-          <span class="bg-emerald-500/10 text-emerald-400 text-xs px-2.5 py-1 rounded-full font-medium">
-            Prochainement
-          </span>
+      <!-- Formulaire Connexion / Inscription -->
+      <div id="auth-box">
+        <!-- Onglets -->
+        <div class="flex border-b border-slate-700 mb-6">
+          <button id="tab-login" onclick="switchTab('login')" class="flex-1 pb-3 font-semibold text-blue-400 border-b-2 border-blue-400 transition">Connexion</button>
+          <button id="tab-signup" onclick="switchTab('signup')" class="flex-1 pb-3 font-semibold text-slate-400 transition">Inscription</button>
         </div>
-        <h4 class="text-xl font-semibold text-white">App 2 : PixelCraft</h4>
-        <p class="text-slate-400 text-sm mt-2">
-          Un éditeur d'images minimaliste et ultra-rapide directement accessible dans votre navigateur web.
-        </p>
-        <div class="mt-6 flex gap-2">
-          <span class="text-xs bg-slate-700 text-slate-300 px-2.5 py-1 rounded">iOS</span>
-          <span class="text-xs bg-slate-700 text-slate-300 px-2.5 py-1 rounded">Android</span>
-        </div>
+
+        <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+          <div>
+            <label class="block text-sm text-slate-300 mb-1">Adresse e-mail</label>
+            <input type="email" id="email" required class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500" placeholder="votre@email.com">
+          </div>
+
+          <div>
+            <label class="block text-sm text-slate-300 mb-1">Mot de passe</label>
+            <input type="password" id="password" required class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500" placeholder="••••••••">
+          </div>
+
+          <button type="submit" id="submit-btn" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition mt-2">
+            Se connecter
+          </button>
+        </form>
+
+        <!-- Message d'alerte -->
+        <div id="form-message" class="mt-4 p-3 rounded-lg text-sm text-center hidden"></div>
       </div>
 
     </div>
-  </section>
+  </main>
 
-  <!-- FOOTER -->
-  <footer class="border-t border-slate-800 text-center py-8 text-slate-500 text-sm">
-    &copy; 2026 Tous droits réservés.
+  <!-- PIED DE PAGE -->
+  <footer class="max-w-6xl mx-auto px-6 py-6 text-center text-slate-500 text-sm">
+    &copy; 2026 DevStudio - Tous droits réservés.
   </footer>
 
+  <!-- SCRIPT LOGIQUE SUPABASE -->
+  <script>
+    // 1. CONFIGURATION SUPABASE
+    const SUPABASE_URL = "https://kjkvsoimkvgocdgildjh.supabase.co";
+    const SUPABASE_ANON_KEY ="sb_publishable_qoUk0BL2Ee28rdMnQ8bapQ_81WXBw7q"; // <-- Remplacez ceci par votre clé publiable Supabase !
+
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let currentMode = 'login'; // 'login' ou 'signup'
+
+    // Gestion du basculement d'onglets
+    function switchTab(mode) {
+      currentMode = mode;
+      const tabLogin = document.getElementById('tab-login');
+      const tabSignup = document.getElementById('tab-signup');
+      const submitBtn = document.getElementById('submit-btn');
+      hideMessage();
+
+      if (mode === 'login') {
+        tabLogin.className = "flex-1 pb-3 font-semibold text-blue-400 border-b-2 border-blue-400 transition";
+        tabSignup.className = "flex-1 pb-3 font-semibold text-slate-400 transition";
+        submitBtn.textContent = "Se connecter";
+      } else {
+        tabSignup.className = "flex-1 pb-3 font-semibold text-blue-400 border-b-2 border-blue-400 transition";
+        tabLogin.className = "flex-1 pb-3 font-semibold text-slate-400 transition";
+        submitBtn.textContent = "S'inscrire";
+      }
+    }
+
+    // Gestion de la soumission du formulaire (Connexion ou Inscription)
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      hideMessage();
+
+      if (currentMode === 'signup') {
+        // Inscription
+        const { data, error } = await supabase.auth.signUp({ email, password });
+        if (error) {
+          showMessage(error.message, 'error');
+        } else {
+          showMessage("Compte créé avec succès ! Vérifiez vos e-mails si une confirmation est requise.", 'success');
+        }
+      } else {
+        // Connexion
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) {
+          showMessage("Identifiants incorrects ou utilisateur introuvable.", 'error');
+        } else {
+          showMessage("Connexion réussie !", 'success');
+          checkUserSession();
+        }
+      }
+    }
+
+    // Déconnexion
+    async function handleLogout() {
+      await supabase.auth.signOut();
+      checkUserSession();
+      showMessage("Vous êtes déconnecté.", 'success');
+    }
+
+    // Vérifier si l'utilisateur est connecté au chargement de la page
+    async function checkUserSession() {
+      const { data: { user } } = await supabase.auth.getUser();
+      const authBox = document.getElementById('auth-box');
+      const sessionBox = document.getElementById('session-box');
+      const userEmailDisplay = document.getElementById('user-email-display');
+      const navStatus = document.getElementById('nav-auth-status');
+
+      if (user) {
+        authBox.classList.add('hidden');
+        sessionBox.classList.remove('hidden');
+        userEmailDisplay.textContent = user.email;
+        navStatus.textContent = `Connecté (${user.email})`;
+      } else {
+        authBox.classList.remove('hidden');
+        sessionBox.classList.add('hidden');
+        navStatus.textContent = "";
+      }
+    }
+
+    // Affichage des messages d'erreur ou de succès
+    function showMessage(text, type) {
+      const msgBox = document.getElementById('form-message');
+      msgBox.textContent = text;
+      msgBox.classList.remove('hidden', 'bg-emerald-900', 'text-emerald-300', 'bg-red-900', 'text-red-300');
+      
+      if (type === 'success') {
+        msgBox.classList.add('bg-emerald-900', 'text-emerald-300');
+      } else {
+        msgBox.classList.add('bg-red-900', 'text-red-300');
+      }
+    }
+
+    function hideMessage() {
+      const msgBox = document.getElementById('form-message');
+      msgBox.classList.add('hidden');
+    }
+
+    // Lancer la vérification au démarrage
+    checkUserSession();
+  </script>
 </body>
 </html>
